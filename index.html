@@ -1,0 +1,2490 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>ВАШЕ ЗАВЕДЕНИЕ — шашлык на углях, заказ онлайн</title>
+  <meta name="description" content="Шашлык на живых углях с доставкой и самовывозом. Заказ напрямую, без наценок агрегаторов." />
+  <meta property="og:title" content="ВАШЕ ЗАВЕДЕНИЕ — шашлык на углях с доставкой" />
+  <meta property="og:description" content="Заказ напрямую с мангала, без наценок агрегаторов." />
+  <meta property="og:type" content="website" />
+
+  <!-- Шрифты: Manrope (текст) + Rubik (заголовки) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Rubik:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* ==========================================================================
+       ДИЗАЙН-СИСТЕМА «УГЛИ» (тёплая палитра, Manrope + Rubik)
+       ========================================================================== */
+    :root {
+      --accent: #C8371D;
+      --accent-rgb: 200, 55, 29;
+      --accent-soft: rgba(200, 55, 29, 0.10);
+      --bg-page: #FAF6F0;
+      --bg-surface: #F3ECE2;
+      --bg-card: #FFFFFF;
+      --text-primary: #2B1D16;
+      --text-secondary: #8A7A6D;
+    }
+
+    body {
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* Обязательное табличное выравнивание цифр для всех цен, весов и счётчиков */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Скрытие полосы прокрутки для горизонтальных лент */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Утилиты акцентного цвета бренда */
+    .bg-accent {
+      background-color: var(--accent);
+    }
+    .text-accent {
+      color: var(--accent);
+    }
+    .bg-accent-soft {
+      background-color: var(--accent-soft);
+    }
+    .border-accent {
+      border-color: var(--accent);
+    }
+    .ring-accent:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.22);
+      border-color: var(--accent);
+    }
+
+    /* Карточки товаров и Bento-блоки в стиле Apple */
+    .apple-card {
+      background-color: var(--bg-card);
+      border-radius: 14px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @media (hover: hover) {
+      .apple-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+      }
+    }
+
+    /* iOS Segmented Control для выбора граммовки (как выбор памяти iPhone) */
+    .ios-segment-group {
+      background-color: var(--bg-surface);
+      border-radius: 13px;
+      padding: 3px;
+      display: grid;
+      gap: 2px;
+    }
+    .ios-segment-btn {
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 4px;
+      color: #6F5F52;
+      transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .ios-segment-btn.active {
+      background-color: #FFFFFF;
+      color: #2B1D16;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Анимация плавающей капсулы корзины (Apple Dynamic Island style) */
+    .dynamic-island {
+      transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.28s ease;
+    }
+    .dynamic-island.hidden-island {
+      transform: translate(-50%, 130%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .dynamic-island.visible-island {
+      transform: translate(-50%, 0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Плавная анимация шторки корзины */
+    .sheet-backdrop {
+      transition: opacity 0.28s ease;
+    }
+    .sheet-panel {
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
+    }
+
+    /* Пульсирующий зелёный индикатор работы мангала */
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.45); opacity: 0.5; }
+    }
+    .live-dot {
+      animation: pulse-dot 2s infinite ease-in-out;
+    }
+
+    /* Плавное появление поповера «Примерка бренда» */
+    @keyframes pop-in {
+      from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .popover-enter {
+      animation: pop-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Горизонтальные ленты: прокрутка колесом/перетаскиванием на компьютере */
+    .h-scroll { overscroll-behavior-x: contain; }
+    @media (pointer: fine) {
+      .h-scroll { cursor: grab; }
+      .h-scroll.is-dragging { cursor: grabbing; scroll-behavior: auto; user-select: none; }
+      .h-scroll.is-dragging * { pointer-events: none; }
+    }
+    .h-scroll-wrap { position: relative; }
+    .h-scroll-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+      width: 32px; height: 32px; border-radius: 999px; background: #fff;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.14); border: 1px solid rgba(0,0,0,0.06);
+      display: none; align-items: center; justify-content: center;
+      font-weight: 700; color: #2B1D16; cursor: pointer;
+    }
+    @media (pointer: fine) {
+      .h-scroll-wrap.can-left  .h-scroll-arrow.left  { display: flex; }
+      .h-scroll-wrap.can-right .h-scroll-arrow.right { display: flex; }
+    }
+    .h-scroll-arrow.left { left: -6px; }
+    .h-scroll-arrow.right { right: -6px; }
+
+    /* Демо-элементы (примерка бренда) видны только по ссылке ?demo=1 */
+    body:not(.is-demo) .demo-only { display: none !important; }
+
+    /* Шапка: position fixed + transform — только так iPhone анимирует её плавно
+       (sticky + transform на iOS «висит», а потом отпрыгивает).
+       Вниз — строка с логотипом уезжает, вверх — возвращается. */
+    :root { --brand-h: 68px; --hide-shift: 100%; }
+    #siteHeader {
+      padding-top: env(safe-area-inset-top);
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
+    }
+    #headerSpacer { height: calc(var(--brand-h) + env(safe-area-inset-top)); }
+    #headerPills { display: none; }
+    #siteHeader.show-pills #headerPills { display: block; }
+    /* Полоска под статус-баром/панелью браузера, чтобы контент не просвечивал */
+    body::before {
+      content: ''; position: fixed; top: 0; left: 0; right: 0; z-index: 45;
+      height: env(safe-area-inset-top); background: #FAF6F0; pointer-events: none;
+    }
+
+    /* Заголовки — Rubik */
+    h1, h2, h3, .font-extrabold { font-family: 'Rubik', 'Manrope', sans-serif; letter-spacing: -0.01em; }
+    /* Тёмный «угольный» блок в начале страницы */
+    .ember-hero {
+      position: relative; overflow: hidden; border-radius: 20px;
+      background: radial-gradient(120% 140% at 100% 0%, rgba(var(--accent-rgb),0.55) 0%, rgba(var(--accent-rgb),0) 55%),
+                  linear-gradient(160deg, #2B1D16 0%, #1A110D 100%);
+      color: #FAF6F0;
+    }
+    .ember-hero::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .18;
+      background-image: radial-gradient(rgba(255,200,150,.9) 1px, transparent 1.5px);
+      background-size: 22px 22px;
+      mask-image: linear-gradient(to left, #000 0%, transparent 70%);
+    }
+    .ember-hero > * { position: relative; z-index: 1; }
+  </style>
+</head>
+<body class="pb-28 selection:bg-[#2B1D16] selection:text-white">
+
+  <!-- ========================================================================
+       1. ШАПКА (STICKY HEADER С ЭФФЕКТОМ МАТОВОГО СТЕКЛА + ПРИМЕРКА БРЕНДА)
+       ======================================================================== -->
+  <header id="siteHeader" class="fixed top-0 inset-x-0 z-40 bg-[#FAF6F0] border-b border-[#E8DED2]">
+    <div id="headerBrandRow" class="max-w-6xl mx-auto px-4 sm:px-6 py-3 relative">
+      <div class="flex items-center justify-between gap-2.5">
+        
+        <!-- Левая часть: интерактивный бейдж [ ВАШ ЛОГО ] + название и адрес -->
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="relative group shrink-0">
+            <!-- Скрытый input для загрузки логотипа клиента -->
+            <input
+              type="file"
+              id="logoUploadInput"
+              accept="image/*"
+              class="hidden"
+              onchange="handleLogoFileSelect(event)"
+            />
+
+            <!-- Бейдж [ ВАШ ЛОГО ] в стиле iOS Squircle -->
+            <button
+              type="button"
+              id="brandLogoButton"
+              onclick="triggerLogoUpload()"
+              title="Нажмите, чтобы загрузить логотип заведения"
+              aria-label="Загрузить логотип заведения"
+              class="relative w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-xl bg-[#F3ECE2] hover:bg-[#EADFD2] text-[#2B1D16] overflow-hidden flex items-center justify-center border border-dashed border-[#CDBFAF] transition-all active:scale-95 cursor-pointer"
+            >
+              <!-- Плейсхолдер [ ВАШ ЛОГО ] по умолчанию -->
+              <div id="defaultLogoPlaceholder" class="w-full h-full flex flex-col items-center justify-center px-1 text-center">
+                <span class="text-[8.5px] sm:text-[9px] font-extrabold tracking-tight leading-[1.1] text-[#2B1D16] uppercase">
+                  [ ВАШ<br/>ЛОГО ]
+                </span>
+              </div>
+
+              <!-- Загруженный логотип заведения -->
+              <img
+                id="customLogoImg"
+                src=""
+                alt="Логотип заведения"
+                class="hidden w-full h-full object-cover"
+              />
+
+              <!-- Подсказка при наведении -->
+              <div class="absolute inset-0 bg-black/65 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center px-1 text-center">
+                <span class="text-[9px] font-semibold leading-tight text-white">Загрузить лого</span>
+              </div>
+            </button>
+          </div>
+
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <h1 id="headerBrandName" class="text-[16px] sm:text-[19px] font-extrabold tracking-tight text-[#2B1D16] truncate">
+                ВАШЕ ЗАВЕДЕНИЕ
+              </h1>
+            </div>
+            <p id="headerSubtitle" class="text-[12px] sm:text-[12.5px] text-[#8A7A6D] truncate mt-0.5">
+              Мангал • Доставка и самовывоз
+            </p>
+          </div>
+        </div>
+
+        <!-- Центральный живой статус-бейдж (на десктопе в шапке) -->
+        <div class="hidden lg:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F3ECE2] border border-[#E8DED2]">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="live-dot absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span id="liveStatusDesktop" class="text-[12.5px] font-medium text-[#2B1D16] tabular-nums">
+            Мангал разогрет • Готовность ~25 мин
+          </span>
+        </div>
+
+        <!-- Правая часть: B2B-инструмент «Примерка бренда» + кнопка связи -->
+        <div class="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            id="brandPitchBtn"
+            onclick="toggleBrandCustomizer()"
+            class="demo-only inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-accent-soft hover:opacity-90 text-accent border border-accent/20 text-[12.5px] font-bold transition-all active:scale-95 cursor-pointer"
+          >
+            <span>🎨</span>
+            <span>Примерка бренда</span>
+          </button>
+
+          <a
+            id="headerPhoneLink"
+            href="tel:+79000000000"
+            aria-label="Позвонить в заведение"
+            class="inline-flex items-center justify-center w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-full bg-[#2B1D16] hover:bg-black text-white text-[12.5px] font-semibold transition-all active:scale-95 tabular-nums"
+          >
+            <svg class="w-3.5 h-3.5 text-white/90 sm:mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            <span class="hidden sm:inline">Позвонить</span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- ======================================================================
+           B2B PITCH POPOVER: «ПРИМЕРКА БРЕНДА» ЗА 5 СЕКУНД НА ВСТРЕЧЕ С ВЛАДЕЛЬЦЕМ
+           ====================================================================== -->
+      <div
+        id="brandCustomizerPopover"
+        class="hidden popover-enter absolute right-4 sm:right-6 top-[calc(100%+8px)] w-[calc(100vw-32px)] max-w-sm bg-white rounded-2xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.16)] border border-[#E8DED2] z-50"
+      >
+        <div class="flex items-center justify-between pb-3 mb-3.5 border-b border-[#E8DED2]">
+          <div>
+            <div class="text-[15px] font-extrabold text-[#2B1D16]">🎨 Примерка бренда</div>
+            <div class="text-[11.5px] text-[#8A7A6D]">Адаптация витрины под клиента за 5 секунд</div>
+          </div>
+          <button
+            type="button"
+            onclick="closeBrandCustomizer()"
+            aria-label="Закрыть панель примерки"
+            class="w-7 h-7 rounded-full bg-[#F3ECE2] hover:bg-[#E8DED2] flex items-center justify-center text-xs text-[#2B1D16] cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="space-y-3.5">
+          <!-- Поле 1: Название заведения -->
+          <div>
+            <label for="customBrandNameInput" class="block text-[11.5px] font-semibold text-[#8A7A6D] mb-1">
+              Название заведения
+            </label>
+            <input
+              id="customBrandNameInput"
+              type="text"
+              placeholder="ВАШЕ ЗАВЕДЕНИЕ"
+              oninput="handleBrandNameInput(this.value)"
+              class="w-full bg-[#F3ECE2] border border-transparent rounded-xl px-3.5 py-2 text-[13.5px] font-semibold text-[#2B1D16] placeholder-[#AD9F92] ring-accent transition-all"
+            />
+          </div>
+
+          <!-- Поле 2: Город / Адрес / Условия -->
+          <div>
+            <label for="customSubtitleInput" class="block text-[11.5px] font-semibold text-[#8A7A6D] mb-1">
+              Город / Адрес / Условия
+            </label>
+            <input
+              id="customSubtitleInput"
+              type="text"
+              placeholder="ул. Центральная, 1 • Доставка 30–45 мин"
+              oninput="handleBrandSubtitleInput(this.value)"
+              class="w-full bg-[#F3ECE2] border border-transparent rounded-xl px-3.5 py-2 text-[13px] text-[#2B1D16] placeholder-[#AD9F92] ring-accent transition-all"
+            />
+          </div>
+
+          <!-- Поле 3: Фирменный цвет (4 кураторских свотча) -->
+          <div>
+            <label class="block text-[11.5px] font-semibold text-[#8A7A6D] mb-1.5">
+              Фирменный акцент
+            </label>
+            <div class="grid grid-cols-4 gap-2" id="accentSwatchesGrid">
+              <button
+                type="button"
+                data-swatch="#C8371D"
+                onclick="selectAccentSwatch('#C8371D', '200, 55, 29')"
+                class="swatch-btn flex flex-col items-center gap-1 p-2 rounded-xl border border-accent bg-accent-soft transition-all cursor-pointer"
+              >
+                <span class="w-6 h-6 rounded-full bg-[#C8371D] shadow-xs border border-black/10"></span>
+                <span class="text-[10.5px] font-semibold text-[#2B1D16]">Угли</span>
+              </button>
+
+              <button
+                type="button"
+                data-swatch="#4D7C0F"
+                onclick="selectAccentSwatch('#4D7C0F', '77, 124, 15')"
+                class="swatch-btn flex flex-col items-center gap-1 p-2 rounded-xl border border-transparent bg-[#F3ECE2] hover:bg-[#EADFD2] transition-all cursor-pointer"
+              >
+                <span class="w-6 h-6 rounded-full bg-[#4D7C0F] shadow-xs border border-black/10"></span>
+                <span class="text-[10.5px] font-semibold text-[#2B1D16]">Олива</span>
+              </button>
+
+              <button
+                type="button"
+                data-swatch="#D97706"
+                onclick="selectAccentSwatch('#D97706', '217, 119, 6')"
+                class="swatch-btn flex flex-col items-center gap-1 p-2 rounded-xl border border-transparent bg-[#F3ECE2] hover:bg-[#EADFD2] transition-all cursor-pointer"
+              >
+                <span class="w-6 h-6 rounded-full bg-[#D97706] shadow-xs border border-black/10"></span>
+                <span class="text-[10.5px] font-semibold text-[#2B1D16]">Шафран</span>
+              </button>
+
+              <button
+                type="button"
+                data-swatch="#2B1D16"
+                onclick="selectAccentSwatch('#2B1D16', '29, 29, 31')"
+                class="swatch-btn flex flex-col items-center gap-1 p-2 rounded-xl border border-transparent bg-[#F3ECE2] hover:bg-[#EADFD2] transition-all cursor-pointer"
+              >
+                <span class="w-6 h-6 rounded-full bg-[#2B1D16] shadow-xs border border-black/10"></span>
+                <span class="text-[10.5px] font-semibold text-[#2B1D16]">Копоть</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Поле 4: Загрузка логотипа и сброс -->
+          <div class="pt-1 flex items-center gap-2">
+            <button
+              type="button"
+              onclick="triggerLogoUpload()"
+              class="flex-1 bg-[#2B1D16] hover:bg-black text-white text-[12.5px] font-semibold py-2.5 px-3 rounded-xl transition-colors cursor-pointer"
+            >
+              📷 Загрузить логотип
+            </button>
+            <button
+              type="button"
+              onclick="resetBrandCustomizer()"
+              class="bg-[#F3ECE2] hover:bg-[#E8DED2] text-[#6F5F52] text-[12.5px] font-semibold py-2.5 px-3 rounded-xl transition-colors cursor-pointer"
+            >
+              Сброс
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Категории внутри шапки: появляются, когда обычные категории уехали под шапку -->
+    <div id="headerPills" class="max-w-6xl mx-auto px-4 sm:px-6 pb-2.5">
+      <div id="categoryPillsFixed" class="h-scroll flex items-center gap-2 overflow-x-auto no-scrollbar"></div>
+    </div>
+  </header>
+  <div id="headerSpacer" aria-hidden="true"></div>
+
+  <!-- Всплывающее уведомление (Toast) без использования alert() -->
+  <div id="toastBanner" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-2">
+    <div class="bg-[#2B1D16]/95 backdrop-blur-md text-white text-[13px] font-medium px-4 py-2.5 rounded-full shadow-xl flex items-center gap-2 border border-white/10">
+      <span class="w-2 h-2 rounded-full bg-accent"></span>
+      <span id="toastMessage">Добавлено в корзину</span>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       2. HERO-БЛОК В СТИЛЕ APPLE BENTO GRID
+       ======================================================================== -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-5 sm:pt-8">
+    
+    <section class="mb-7 sm:mb-9">
+      <!-- Верхняя строка: живой статус-бейдж -->
+      <div class="flex flex-wrap items-center justify-between gap-2.5 mb-4">
+        <div class="inline-flex lg:hidden items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8DED2] shadow-2xs">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="live-dot absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span id="liveStatusMobile" class="text-[12px] font-medium text-[#2B1D16] tabular-nums">
+            Мангал разогрет • Готовность ~25 мин
+          </span>
+        </div>
+
+        <div class="inline-flex items-center gap-1.5 text-[12px] font-medium text-[#8A7A6D] bg-white px-3.5 py-1.5 rounded-full border border-[#E8DED2] ml-auto">
+          <span>🔥</span>
+          <span>Заказ напрямую • Без наценок агрегаторов</span>
+        </div>
+      </div>
+
+      <!-- Тёмный блок с заголовком -->
+      <div class="ember-hero px-5 py-7 sm:px-9 sm:py-10">
+        <div class="max-w-2xl">
+          <span class="inline-flex items-center gap-1.5 text-[11.5px] font-bold uppercase tracking-[0.12em] text-white/70">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent"></span> Готовим только под заказ
+          </span>
+          <h2 class="mt-3 text-[30px] sm:text-[46px] leading-[1.05] font-extrabold text-white">
+            Шашлык на живых углях —<br class="hidden sm:block"/> горячим к вашему столу
+          </h2>
+          <p class="text-[14.5px] sm:text-[16px] text-white/70 mt-3 leading-relaxed">
+            Мясо маринуем сами и ставим на мангал сразу после заказа. Везём в фольге и термосумке — приезжает сочным и с дымком.
+          </p>
+          <div class="mt-5 flex flex-wrap gap-2 text-[12.5px] font-semibold">
+            <a href="#categoryNav" class="px-4 py-2.5 rounded-full bg-accent text-white hover:opacity-90 transition">Смотреть меню</a>
+            <span class="px-4 py-2.5 rounded-full bg-white/10 text-white/90 border border-white/15">Самовывоз −10%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BENTO GRID: 2 КРУПНЫЕ ВЫДЕЛЕННЫЕ КАРТОЧКИ -->
+      <div id="bentoHitsGrid" class="grid grid-cols-1 md:grid-cols-12 gap-4 mt-6">
+        <!-- Рендерится динамически из SITE_CONFIG и MENU_ITEMS -->
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         3. ЛИПКАЯ НАВИГАЦИЯ ПО КАТЕГОРИЯМ (STICKY IOS PILLS)
+         ======================================================================== -->
+    <nav id="categoryNav" aria-label="Категории меню" class="-mx-4 px-4 sm:mx-0 sm:px-0 py-3">
+      <div id="categoryPills" class="h-scroll flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5">
+        <!-- Таблетки категорий рендерятся из SITE_CONFIG.categories -->
+      </div>
+    </nav>
+
+    <!-- ========================================================================
+         4. КАТАЛОГ БЛЮД ПО СЕКЦИЯМ С iPHONE-КОНФИГУРАТОРОМ ГРАММОВОК
+         ======================================================================== -->
+    <div id="menuContainer" class="space-y-10 pt-3">
+      <!-- Карточки товаров рендерятся из MENU_ITEMS -->
+    </div>
+
+    <!-- Лаконичный обезличенный футер -->
+    <footer class="mt-16 pt-8 pb-6 border-t border-[#E8DED2] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[13px] text-[#8A7A6D]">
+      <div>
+        <p class="font-bold text-[#2B1D16]" id="footerBrandInfo">ВАШЕ ЗАВЕДЕНИЕ • Мангал • Доставка и самовывоз</p>
+        <p class="mt-0.5" id="footerHours">Ежедневно с 10:00 до 23:00 • Прямой приём заказов без комиссии агрегаторов</p>
+        <p class="mt-1.5"><a href="privacy.html" class="underline hover:text-[#2B1D16]">Политика конфиденциальности</a> • <a href="privacy.html#offer" class="underline hover:text-[#2B1D16]">Условия заказа</a></p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3 tabular-nums">
+        <span>Бесплатная доставка от <strong id="footerFreeDelivery" class="text-[#2B1D16]">1 500 ₽</strong></span>
+        <span>•</span>
+        <span>Самовывоз <strong class="text-emerald-600">−10%</strong></span>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ========================================================================
+       5. ПЛАВАЮЩАЯ КОРЗИНА СНИЗУ (STYLE: APPLE DYNAMIC ISLAND)
+       ======================================================================== -->
+  <div id="dynamicIslandCart" class="dynamic-island hidden-island fixed bottom-5 left-1/2 z-40 w-[calc(100%-32px)] max-w-md">
+    <button
+      type="button"
+      onclick="openCartDrawer()"
+      class="w-full bg-[#2B1D16] hover:bg-black text-white rounded-full px-5 py-3.5 shadow-[0_14px_34px_rgba(0,0,0,0.28)] border border-white/10 flex items-center justify-between gap-3 transition-transform active:scale-[0.98] cursor-pointer"
+    >
+      <div class="flex items-center gap-3 min-w-0">
+        <span id="islandCountBadge" class="w-7 h-7 rounded-full bg-accent text-white text-[13px] font-bold flex items-center justify-center tabular-nums shrink-0">
+          1
+        </span>
+        <div id="islandSummaryLine" class="text-[14.5px] font-bold tabular-nums truncate">
+          Корзина • 500 г • 650 ₽
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 font-semibold text-[13.5px] bg-white/12 px-3.5 py-1.5 rounded-full shrink-0">
+        <span>Заказать</span>
+        <span>→</span>
+      </div>
+    </button>
+  </div>
+
+  <!-- ========================================================================
+       6. ВЫЕЗЖАЮЩАЯ ШТОРКА КОРЗИНЫ И ОФОРМЛЕНИЯ ЗАКАЗА
+       ======================================================================== -->
+  <div id="cartDrawer" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+    <!-- Затемнение фона -->
+    <div id="cartBackdrop" onclick="closeCartDrawer()" class="sheet-backdrop fixed inset-0 bg-black/40 backdrop-blur-xs opacity-0"></div>
+
+    <!-- Панель шторки / модального окна -->
+    <div class="fixed inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center pointer-events-none p-0 sm:p-4">
+      <div id="cartPanel" class="sheet-panel pointer-events-auto w-full sm:max-w-lg bg-[#F3ECE2] rounded-t-3xl sm:rounded-2xl max-h-[92vh] flex flex-col shadow-2xl translate-y-full sm:translate-y-6 sm:opacity-0 overflow-hidden">
+        
+        <!-- Шапка шторки -->
+        <div class="bg-white px-5 py-4 border-b border-[#E8DED2] flex items-center justify-between shrink-0">
+          <div>
+            <h3 id="cartDrawerTitle" class="text-[18px] font-bold text-[#2B1D16] tracking-tight">Ваш заказ • ВАШЕ ЗАВЕДЕНИЕ</h3>
+            <p id="cartHeaderSubtitle" class="text-[12px] text-[#8A7A6D] tabular-nums">1 позиция • 500 г</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              onclick="clearCart()"
+              class="text-[12.5px] font-medium text-[#8A7A6D] hover:text-red-600 px-2.5 py-1.5 rounded-xl hover:bg-black/[0.04] transition-colors cursor-pointer"
+            >
+              Очистить
+            </button>
+            <button
+              type="button"
+              onclick="closeCartDrawer()"
+              aria-label="Закрыть корзину"
+              class="w-8 h-8 rounded-full bg-[#F3ECE2] hover:bg-[#E8DED2] flex items-center justify-center text-[#2B1D16] transition-colors cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <!-- Прокручиваемое тело корзины -->
+        <div class="overflow-y-auto px-4 sm:px-5 py-4 space-y-4 flex-1">
+          
+          <!-- 1. Список выбранных позиций -->
+          <div id="cartItemsList" class="space-y-2.5">
+            <!-- Рендерится динамически -->
+          </div>
+
+          <!-- 2. Умные допродажи «К мясу идеально подойдёт» (рост среднего чека на 15–25%) -->
+          <div class="bg-white rounded-2xl p-4 border border-[#E8DED2]">
+            <div class="flex items-center justify-between mb-2.5">
+              <span class="text-[13.5px] font-bold text-[#2B1D16]">К мясу идеально подойдёт</span>
+              <span class="text-[11px] font-medium text-[#8A7A6D]">Добавить в 1 тап</span>
+            </div>
+            <div class="h-scroll-wrap" data-hscroll-wrap>
+              <button type="button" class="h-scroll-arrow left" aria-label="Прокрутить влево" data-hscroll-arrow="-1">‹</button>
+              <div id="upsellCarousel" class="h-scroll flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
+                <!-- Рендерится из SITE_CONFIG.upsells -->
+              </div>
+              <button type="button" class="h-scroll-arrow right" aria-label="Прокрутить вправо" data-hscroll-arrow="1">›</button>
+            </div>
+          </div>
+
+          <!-- 3. Способ получения: Доставка / Самовывоз (-10%) -->
+          <div class="bg-white rounded-2xl p-4 border border-[#E8DED2] space-y-3">
+            <div class="ios-segment-group grid-cols-2">
+              <button
+                type="button"
+                id="modeDeliveryBtn"
+                onclick="setDeliveryMode('delivery')"
+                class="ios-segment-btn active py-2 text-[13px]"
+              >
+                🛵 Доставка
+              </button>
+              <button
+                type="button"
+                id="modePickupBtn"
+                onclick="setDeliveryMode('pickup')"
+                class="ios-segment-btn py-2 text-[13px]"
+              >
+                🏃 Самовывоз (−10%)
+              </button>
+            </div>
+
+            <!-- Прогресс-бар бесплатной доставки или информация о самовывозе -->
+            <div id="deliveryStatusBox" class="bg-[#F3ECE2] rounded-xl px-3.5 py-2.5 text-[12.5px] text-[#2B1D16]">
+              <!-- Обновляется динамически -->
+            </div>
+
+            <!-- Компактная форма оформления из 3 полей -->
+            <div class="space-y-2.5 pt-1">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label for="inputName" class="block text-[11.5px] font-medium text-[#8A7A6D] mb-1 ml-1">Ваше имя</label>
+                  <input
+                    id="inputName"
+                    type="text"
+                    placeholder="Алексей"
+                    class="w-full bg-[#F3ECE2] border border-transparent rounded-xl px-3.5 py-2.5 text-[16px] text-[#2B1D16] placeholder-[#AD9F92] ring-accent transition-all"
+                  />
+                </div>
+                <div>
+                  <label for="inputPhone" class="block text-[11.5px] font-medium text-[#8A7A6D] mb-1 ml-1">Телефон</label>
+                  <input
+                    id="inputPhone"
+                    type="tel"
+                    inputmode="tel"
+                    placeholder="+7 (900) 000-00-00"
+                    oninput="formatPhoneInput(this)"
+                    class="w-full bg-[#F3ECE2] border border-transparent rounded-xl px-3.5 py-2.5 text-[16px] text-[#2B1D16] placeholder-[#AD9F92] tabular-nums ring-accent transition-all"
+                  />
+                </div>
+              </div>
+
+              <div id="addressFieldWrapper">
+                <label for="inputAddress" class="block text-[11.5px] font-medium text-[#8A7A6D] mb-1 ml-1">Адрес доставки</label>
+                <input
+                  id="inputAddress"
+                  type="text"
+                  placeholder="ул. Центральная, 15, подъезд 2, кв. 42"
+                  class="w-full bg-[#F3ECE2] border border-transparent rounded-xl px-3.5 py-2.5 text-[16px] text-[#2B1D16] placeholder-[#AD9F92] ring-accent transition-all"
+                />
+              </div>
+
+              <div>
+                <label for="inputComment" class="block text-[11.5px] font-medium text-[#8A7A6D] mb-1 ml-1">Комментарий (необязательно)</label>
+                <input
+                  id="inputComment"
+                  type="text"
+                  maxlength="300"
+                  placeholder="Домофон не работает, позвоните"
+                  class="w-full bg-[#F3ECE2] border border-transparent rounded-xl px-3.5 py-2.5 text-[16px] text-[#2B1D16] placeholder-[#AD9F92] ring-accent transition-all"
+                />
+              </div>
+
+              <!-- Защита от спам-ботов: поле невидимо для людей -->
+              <input id="inputWebsite" type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+              <!-- Способ оплаты -->
+              <div class="pt-1">
+                <label class="block text-[11.5px] font-medium text-[#8A7A6D] mb-1.5 ml-1">Способ оплаты</label>
+                <div class="grid grid-cols-3 gap-1.5" id="paymentMethodGroup">
+                  <button type="button" data-pay="Картой курьеру" onclick="setPaymentMethod(this)" class="pay-pill active border border-accent bg-accent-soft text-[#2B1D16] rounded-xl py-2 px-2 text-[12px] font-semibold text-center transition-all cursor-pointer">
+                    💳 Картой курьеру
+                  </button>
+                  <button type="button" data-pay="Перевод" onclick="setPaymentMethod(this)" class="pay-pill border border-transparent bg-[#F3ECE2] text-[#6F5F52] rounded-xl py-2 px-2 text-[12px] font-semibold text-center transition-all cursor-pointer">
+                    ⚡ Перевод
+                  </button>
+                  <button type="button" data-pay="Наличные" onclick="setPaymentMethod(this)" class="pay-pill border border-transparent bg-[#F3ECE2] text-[#6F5F52] rounded-xl py-2 px-2 text-[12px] font-semibold text-center transition-all cursor-pointer">
+                    💵 Наличные
+                  </button>
+                </div>
+              </div>
+
+              <!-- Согласие на обработку персональных данных (152-ФЗ) -->
+              <label class="flex items-start gap-2.5 pt-1.5 cursor-pointer select-none">
+                <input id="inputConsent" type="checkbox" class="mt-0.5 w-5 h-5 shrink-0 rounded accent-[var(--accent)] cursor-pointer" />
+                <span class="text-[12.5px] leading-snug text-[#6F5F52]">
+                  Согласен на&nbsp;<a id="privacyLink" href="privacy.html" target="_blank" rel="noopener" class="underline text-[#2B1D16]">обработку персональных данных</a>
+                  и с&nbsp;<a id="offerLink" href="privacy.html#offer" target="_blank" rel="noopener" class="underline text-[#2B1D16]">условиями заказа</a>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 4. Итоговый расчёт -->
+          <div class="bg-white rounded-2xl p-4 border border-[#E8DED2] space-y-2 text-[13.5px] tabular-nums">
+            <div class="flex justify-between text-[#6F5F52]">
+              <span>Блюда (<span id="summaryWeight">500 г</span>)</span>
+              <span id="summarySubtotal">650 ₽</span>
+            </div>
+            <div id="summaryDiscountRow" class="hidden justify-between text-emerald-600 font-medium">
+              <span>Скидка за самовывоз (−10%)</span>
+              <span id="summaryDiscount">−65 ₽</span>
+            </div>
+            <div class="flex justify-between text-[#6F5F52]">
+              <span>Доставка</span>
+              <span id="summaryDelivery">200 ₽</span>
+            </div>
+            <div class="pt-2 border-t border-[#E8DED2] flex justify-between items-baseline text-[16px] font-bold text-[#2B1D16]">
+              <span>Итого к оплате</span>
+              <span id="summaryFinalTotal" class="text-[19px]">850 ₽</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Липкая кнопка подтверждения заказа -->
+        <div class="bg-white px-5 py-3.5 border-t border-[#E8DED2] shrink-0">
+          <button
+            type="button"
+            id="submitOrderBtn"
+            onclick="submitOrder()"
+            class="w-full bg-accent hover:opacity-95 text-white font-bold text-[15px] py-3.5 px-6 rounded-xl shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2 tabular-nums cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+          >
+            <span id="submitBtnLabel">Оформить заказ</span>
+            <span>•</span>
+            <span id="submitBtnTotal">850 ₽</span>
+          </button>
+          <p class="text-[11.5px] text-[#8A7A6D] text-center mt-2">Оплата при получении. Мы перезвоним для подтверждения.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       6.5. ОКНО «ЗАКАЗ ПРИНЯТ» ДЛЯ ПОКУПАТЕЛЯ (показывается только после
+       успешного ответа сервера)
+       ======================================================================== -->
+  <div id="customerSuccessModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm" role="dialog" aria-modal="true">
+    <div class="bg-[#FAF6F0] w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-6 text-center">
+      <div class="w-16 h-16 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7" stroke="#059669" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3 class="text-[24px] font-extrabold tracking-tight text-[#2B1D16]">
+        Заказ <span id="customerOrderNumber" class="tabular-nums">#—</span> принят
+      </h3>
+      <p class="text-[14.5px] text-[#8A7A6D] mt-2 leading-relaxed">
+        Администратор перезвонит в течение 5 минут, чтобы подтвердить заказ. Мангал уже разогрет 🔥
+      </p>
+      <div class="bg-white rounded-xl border border-[#E8DED2] text-left px-4 py-3 mt-5 space-y-2 text-[14px] tabular-nums">
+        <div class="flex justify-between"><span class="text-[#8A7A6D]">Получение</span><span id="customerOrderMode" class="font-semibold text-[#2B1D16]">Доставка</span></div>
+        <div class="flex justify-between"><span class="text-[#8A7A6D]">Оплата</span><span id="customerOrderPay" class="font-semibold text-[#2B1D16]">Картой курьеру</span></div>
+        <div class="flex justify-between pt-2 border-t border-[#E8DED2]"><span class="font-bold text-[#2B1D16]">Итого</span><span id="customerOrderTotal" class="font-extrabold text-[#2B1D16]">0 ₽</span></div>
+      </div>
+      <a id="customerCallLink" href="tel:+79000000000" class="mt-5 block w-full bg-white border border-[#D8CABB] text-[#2B1D16] font-semibold text-[14.5px] py-3 rounded-xl">📞 Позвонить в заведение</a>
+      <button type="button" onclick="closeCustomerSuccess()" class="mt-2.5 w-full bg-[#2B1D16] hover:bg-black text-white font-semibold text-[14.5px] py-3 rounded-xl cursor-pointer">Вернуться в меню</button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       7. ОКНО-ДЕМОНСТРАЦИЯ ДЛЯ ВЛАДЕЛЬЦА: ЗАКАЗ В TELEGRAM-ЧАТЕ ЗАВЕДЕНИЯ
+       (только в демо-режиме: ?demo=1 или пока не настроен адрес приёма заказов)
+       ======================================================================== -->
+  <div id="orderSuccessModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div class="bg-[#F3ECE2] w-full max-w-md rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+      
+      <!-- Верхний блок -->
+      <div class="bg-white p-5 text-center border-b border-[#E8DED2] shrink-0">
+        <div class="w-12 h-12 rounded-full bg-sky-500/15 text-sky-600 flex items-center justify-center mx-auto mb-3">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+          </svg>
+        </div>
+        <div class="inline-block text-[11px] font-bold uppercase tracking-wider text-accent bg-accent-soft px-2.5 py-1 rounded-full mb-2">Демо для владельца</div>
+        <h3 class="text-[19px] font-extrabold text-[#2B1D16] tracking-tight">
+          Так заказ прилетит в Telegram заведения
+        </h3>
+        <p class="text-[13px] text-[#8A7A6D] mt-1">
+          Заказ <span id="receiptOrderNumber" class="font-semibold text-[#2B1D16] tabular-nums">#108</span> мгновенно отправлен в рабочий чат администратора <strong id="receiptBrandName" class="text-[#2B1D16]">ВАШЕ ЗАВЕДЕНИЕ</strong>.
+        </p>
+      </div>
+
+      <!-- Интерфейс чата Telegram с карточкой заказа -->
+      <div class="p-4 sm:p-5 overflow-y-auto space-y-3 flex-1">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-[#8A7A6D]">
+            Telegram-бот заведения
+          </span>
+          <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700">
+            Без CRM и комиссий
+          </span>
+        </div>
+
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-[#E8DED2] text-[13px] leading-relaxed text-[#2B1D16] space-y-3">
+          <div class="flex items-center justify-between border-b border-[#E8DED2] pb-2.5 gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div id="tgBotAvatar" class="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-xs font-bold shrink-0">
+                ВЗ
+              </div>
+              <div class="min-w-0">
+                <div class="font-bold text-[13px] truncate" id="tgBotTitle">ВАШЕ ЗАВЕДЕНИЕ • Заказы</div>
+                <div class="text-[11px] text-[#8A7A6D]">чат администратора и мангала</div>
+              </div>
+            </div>
+            <span id="tgOrderStatusTag" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-800 shrink-0">
+              Новый заказ
+            </span>
+          </div>
+
+          <pre id="tgMessagePreview" class="whitespace-pre-wrap font-sans text-[12.5px] text-[#2B1D16] leading-snug tabular-nums"></pre>
+
+          <div class="pt-1">
+            <button
+              type="button"
+              id="tgAcceptBtn"
+              onclick="simulateAdminAccept()"
+              class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[13px] py-2.5 px-4 rounded-xl transition-all active:scale-[0.99] cursor-pointer shadow-2xs"
+            >
+              ✅ Принять в работу
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Нижняя кнопка возврата -->
+      <div class="bg-white p-4 border-t border-[#E8DED2] shrink-0">
+        <button
+          type="button"
+          onclick="closeSuccessModal()"
+          class="w-full bg-[#2B1D16] hover:bg-black text-white font-semibold text-[14px] py-3 rounded-xl transition-colors cursor-pointer"
+        >
+          Вернуться на витрину
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       КОНФИГУРАЦИЯ МАКЕТА (SITE_CONFIG И MENU_ITEMS) + ЛОГИКА ВИТРИНЫ
+       ======================================================================== -->
+  <script>
+    /**
+     * ============================================================================
+     * 1. SITE_CONFIG — БАЗОВЫЕ НАСТРОЙКИ МАКЕТА (БЕЗ ПРИВЯЗКИ К БРЕНДУ)
+     * При продаже сайта конкретной шашлычной достаточно заменить значения здесь
+     * или продемонстрировать адаптацию вживую через кнопку «🎨 Примерка бренда».
+     * ============================================================================
+     */
+    const SITE_CONFIG = {
+      defaultBrandName: 'ВАШЕ ЗАВЕДЕНИЕ',
+      defaultSubtitle: 'Мангал • Доставка и самовывоз',
+      defaultPitchAddress: 'ул. Центральная, 1 • Доставка 30–45 мин',
+      phoneDisplay: '+7 (900) 000-00-00',
+      phoneRaw: '+79000000000',
+      defaultAccentColor: '#C8371D',
+      defaultAccentRgb: '200, 55, 29',
+      prepTimeMinutes: 25,
+
+      // Условия доставки и самовывоза
+      delivery: {
+        fee: 200,                 // Стоимость доставки до порога (₽)
+        freeThreshold: 1500,      // Бесплатная доставка от этой суммы (₽)
+        pickupDiscountPercent: 10 // Скидка за самовывоз (%)
+      },
+
+      // Адрес серверной функции приёма заказов (см. order-function.js).
+      // ТОКЕН БОТА СЮДА НЕ ПИШЕМ: он хранится только на сервере.
+      // Пока адрес пустой — сайт работает в демо-режиме (заказы никуда не уходят).
+      orderEndpoint: '',
+
+      // Часы работы (для статуса «Открыто/Закрыто»), время местное
+      hours: { open: '10:00', close: '23:00' },
+
+      // Тексты, которые раньше были зашиты в разметку
+      groupSizeLabel: 'Хватит на 4–6 человек',
+      addressShort: 'ул. Центральная, 1',
+
+      // Навигационные категории (Sticky Pills)
+      categories: [
+        { id: 'all', title: 'Все' },
+        { id: 'shashlik', title: 'Шашлык' },
+        { id: 'lyulya', title: 'Люля-кебаб' },
+        { id: 'sets', title: 'Сеты' },
+        { id: 'grill', title: 'На углях' },
+        { id: 'sauces', title: 'Соусы и лаваш' },
+        { id: 'drinks', title: 'Напитки' }
+      ],
+
+      // Позиции для 1-тап допродажи в корзине («К мясу идеально подойдёт»)
+      upsells: [
+        {
+          id: 'upsell-lavash',
+          title: 'Армянский лаваш',
+          weightLabel: '120 г',
+          grams: 120,
+          price: 50,
+          emoji: '🫓'
+        },
+        {
+          id: 'upsell-sauce',
+          title: 'Красный соус',
+          weightLabel: '100 г',
+          grams: 100,
+          price: 70,
+          emoji: '🍅'
+        },
+        {
+          id: 'upsell-onion',
+          title: 'Маринованный лук',
+          weightLabel: '100 г',
+          grams: 100,
+          price: 60,
+          emoji: '🧅'
+        }
+      ]
+    };
+
+    /**
+     * ============================================================================
+     * 2. MENU_ITEMS — УНИВЕРСАЛЬНЫЙ КАТАЛОГ БЛЮД С НАСТРАИВАЕМЫМИ ГРАММОВКАМИ
+     * ============================================================================
+     */
+    const MENU_ITEMS = [
+      // --- ШАШЛЫК ---
+      {
+        id: 'pork-neck',
+        category: 'shashlik',
+        badge: 'Хит продаж',
+        title: 'Свиная шея',
+        description: 'Отборная мраморная шея в классическом луково-перечном маринаде. Сочная внутри с румяной корочкой на живых углях.',
+        image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🥩',
+        defaultOptionIndex: 1, // По умолчанию выбран 500 г
+        options: [
+          { label: '200 г', grams: 200, price: 280 },
+          { label: '500 г', grams: 500, price: 650 },
+          { label: '1 кг', grams: 1000, price: 1250 },
+          { label: '2 кг', grams: 2000, price: 2400 }
+        ]
+      },
+      {
+        id: 'lamb-rack',
+        category: 'shashlik',
+        badge: 'Кавказская классика',
+        title: 'Баранья корейка',
+        description: 'Нежная корейка молодого барашка на рёбрышке со специями зиры и кориандра, подаётся со свежей зеленью.',
+        image: 'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🍖',
+        defaultOptionIndex: 1,
+        options: [
+          { label: '200 г', grams: 200, price: 390 },
+          { label: '500 г', grams: 500, price: 940 },
+          { label: '1 кг', grams: 1000, price: 1790 },
+          { label: '2 кг', grams: 2000, price: 3450 }
+        ]
+      },
+      {
+        id: 'chicken-wings',
+        category: 'shashlik',
+        title: 'Куриные крылышки',
+        description: 'Румяные хрустящие крылышки в пряно-чесночной глазури с лёгким ароматом берёзового дымка.',
+        image: 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🍗',
+        defaultOptionIndex: 1,
+        options: [
+          { label: '200 г', grams: 200, price: 220 },
+          { label: '500 г', grams: 500, price: 510 },
+          { label: '1 кг', grams: 1000, price: 980 },
+          { label: '2 кг', grams: 2000, price: 1890 }
+        ]
+      },
+      {
+        id: 'chicken-fillet',
+        category: 'shashlik',
+        title: 'Куриное филе',
+        description: 'Сочное филе грудки в сливочно-пряном маринаде с паприкой. Мягкое, нежное и лёгкое.',
+        image: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🍢',
+        defaultOptionIndex: 1,
+        options: [
+          { label: '200 г', grams: 200, price: 240 },
+          { label: '500 г', grams: 500, price: 560 },
+          { label: '1 кг', grams: 1000, price: 1080 },
+          { label: '2 кг', grams: 2000, price: 2090 }
+        ]
+      },
+
+      // --- ЛЮЛЯ-КЕБАБ ---
+      {
+        id: 'lyulya-beef',
+        category: 'lyulya',
+        badge: 'Рубленое мясо',
+        title: 'Люля-кебаб из говядины',
+        description: 'Рубленая отборная говядина с репчатым луком, свежей кинзой и кавказскими специями на шампуре.',
+        image: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🥙',
+        defaultOptionIndex: 1,
+        options: [
+          { label: '200 г', grams: 200, price: 290 },
+          { label: '500 г', grams: 500, price: 690 },
+          { label: '1 кг', grams: 1000, price: 1320 },
+          { label: '2 кг', grams: 2000, price: 2550 }
+        ]
+      },
+      {
+        id: 'lyulya-chicken',
+        category: 'lyulya',
+        title: 'Люля-кебаб из курицы',
+        description: 'Нежный куриный люля со свежей зеленью и деликатными специями, запечённый до румяной корочки.',
+        image: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🌯',
+        defaultOptionIndex: 1,
+        options: [
+          { label: '200 г', grams: 200, price: 250 },
+          { label: '500 г', grams: 500, price: 590 },
+          { label: '1 кг', grams: 1000, price: 1120 },
+          { label: '2 кг', grams: 2000, price: 2150 }
+        ]
+      },
+
+      // --- СЕТЫ ---
+      {
+        id: 'set-big-mangal',
+        category: 'sets',
+        isBentoFeatured: true,
+        badge: 'Выбор компании',
+        title: 'Сет «Большой мангал»',
+        description: 'Свиная шея (600 г), баранья корейка (400 г), люля-кебаб из говядины (400 г), куриные крылышки (300 г), картофель с курдюком (300 г), 2 соуса и лаваш.',
+        image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=950&q=80',
+        fallbackEmoji: '🔥',
+        defaultOptionIndex: 0, // 2 кг по умолчанию
+        options: [
+          { label: '2 кг', grams: 2000, price: 2390 },
+          { label: '3 кг', grams: 3000, price: 3450 }
+        ]
+      },
+
+      // --- НА УГЛЯХ ---
+      {
+        id: 'mushrooms-grill',
+        category: 'grill',
+        title: 'Шампиньоны на углях',
+        description: 'Крупные шляпки свежих шампиньонов, запечённые целиком в чесночно-сливочном маринаде.',
+        image: 'https://images.unsplash.com/photo-1592417817098-8fd3d9eb14a5?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🍄',
+        defaultOptionIndex: 0,
+        options: [
+          { label: '250 г', grams: 250, price: 240 },
+          { label: '500 г', grams: 500, price: 450 }
+        ]
+      },
+      {
+        id: 'veggies-grill',
+        category: 'grill',
+        title: 'Овощи-гриль',
+        description: 'Баклажан, сладкий перец и спелые томаты с дымком, заправленные ароматным маслом и зеленью.',
+        image: 'https://images.unsplash.com/photo-1592417817098-8fd3d9eb14a5?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🍆',
+        defaultOptionIndex: 0,
+        options: [
+          { label: '300 г', grams: 300, price: 290 },
+          { label: '600 г', grams: 600, price: 540 }
+        ]
+      },
+      {
+        id: 'potato-kurdyuk',
+        category: 'grill',
+        title: 'Картофель с курдюком',
+        description: 'Молодой картофель, пропитанный соком ароматного курдюка с золотистой корочкой и свежим укропом.',
+        image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🥔',
+        defaultOptionIndex: 0,
+        options: [
+          { label: '250 г', grams: 250, price: 210 },
+          { label: '500 г', grams: 500, price: 390 }
+        ]
+      },
+
+      // --- СОУСЫ И ЛАВАШ ---
+      {
+        id: 'armenian-lavash',
+        category: 'sauces',
+        title: 'Армянский лаваш',
+        description: 'Свежий тонкий лист армянского лаваша — идеально заворачивать горячий шашлык с зеленью.',
+        image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🫓',
+        defaultOptionIndex: 0,
+        options: [
+          { label: '120 г', grams: 120, price: 50 }
+        ]
+      },
+      {
+        id: 'red-sauce',
+        category: 'sauces',
+        title: 'Фирменный красный соус',
+        description: 'Густой домашний томатный соус со свежей кинзой, чесноком и пряными кавказскими травами.',
+        image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🍅',
+        defaultOptionIndex: 0,
+        options: [
+          { label: '100 г', grams: 100, price: 70 },
+          { label: '250 г', grams: 250, price: 150 }
+        ]
+      },
+      {
+        id: 'white-garlic-sauce',
+        category: 'sauces',
+        title: 'Белый чесночный соус',
+        description: 'Нежный сливочно-сметанный соус с молодым чесноком, укропом и свежим огурцом.',
+        image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🥣',
+        defaultOptionIndex: 0,
+        options: [
+          { label: '100 г', grams: 100, price: 70 },
+          { label: '250 г', grams: 250, price: 150 }
+        ]
+      },
+      {
+        id: 'pickled-onion',
+        category: 'sauces',
+        title: 'Маринованный лук с зеленью',
+        description: 'Хрустящий красный лук в лёгком маринаде с пряным сумахом и свежей рубленой зеленью.',
+        image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🧅',
+        defaultOptionIndex: 0,
+        options: [
+          { label: '100 г', grams: 100, price: 60 },
+          { label: '200 г', grams: 200, price: 110 }
+        ]
+      },
+
+      // --- НАПИТКИ ---
+      {
+        id: 'berry-mors',
+        category: 'drinks',
+        title: 'Домашний ягодный морс',
+        description: 'Освежающий морс из лесной клюквы и брусники с умеренной сладостью — идеально к мясу на углях.',
+        image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=850&q=80',
+        fallbackEmoji: '🥤',
+        defaultOptionIndex: 0,
+        options: [
+          { label: '0.5 л', grams: 500, price: 120 },
+          { label: '1 л', grams: 1000, price: 210 }
+        ]
+      }
+    ];
+
+    const PITCH_STORAGE_KEY = 'ugli_template_pitch_brand_v1';
+
+    // Демо-режим: ссылка с ?demo=1 ИЛИ ещё не настроен приём заказов
+    const DEMO_MODE =
+      new URLSearchParams(location.search).has('demo') || !SITE_CONFIG.orderEndpoint;
+
+    /* Экранирование текста перед вставкой в HTML (защита от поломки вёрстки и XSS) */
+    function esc(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    /* Правильные окончания: 1 позиция, 2 позиции, 5 позиций, 11 позиций, 21 позиция */
+    function plural(n, one, few, many) {
+      const n10 = n % 10, n100 = n % 100;
+      if (n10 === 1 && n100 !== 11) return one;
+      if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return few;
+      return many;
+    }
+
+    /* Открыто ли заведение сейчас (поддерживает работу после полуночи) */
+    function isOpenNow() {
+      const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+      const now = new Date();
+      const cur = now.getHours() * 60 + now.getMinutes();
+      const o = toMin(SITE_CONFIG.hours.open), c = toMin(SITE_CONFIG.hours.close);
+      return o < c ? cur >= o && cur < c : cur >= o || cur < c;
+    }
+
+    /* ==========================================================================
+       СОСТОЯНИЕ ПРИЛОЖЕНИЯ (STATE)
+       ========================================================================== */
+    const state = {
+      brand: {
+        name: SITE_CONFIG.defaultBrandName,
+        subtitle: SITE_CONFIG.defaultSubtitle,
+        accentColor: SITE_CONFIG.defaultAccentColor,
+        accentRgb: SITE_CONFIG.defaultAccentRgb,
+        logoDataUrl: ''
+      },
+      activeCategory: 'all',
+      selectedOptions: {},
+      cart: {},
+      deliveryMode: 'delivery', // 'delivery' | 'pickup'
+      paymentMethod: 'Картой курьеру',
+      orderCounter: 108
+    };
+
+    // Инициализация выбранных порций по умолчанию
+    MENU_ITEMS.forEach(item => {
+      state.selectedOptions[item.id] = item.defaultOptionIndex || 0;
+    });
+
+    /* ==========================================================================
+       ФОРМАТИРОВАНИЕ, TOAST И FALLBACK ИЗОБРАЖЕНИЙ
+       ========================================================================== */
+    function formatPrice(num) {
+      return num.toLocaleString('ru-RU') + ' ₽';
+    }
+
+    function formatWeight(grams) {
+      if (grams >= 1000) {
+        const kg = (grams / 1000).toFixed(grams % 1000 === 0 ? 0 : 2).replace(/\.?0+$/, '');
+        return `${kg} кг`;
+      }
+      return `${grams} г`;
+    }
+
+    // Эмодзи и название берём из data-атрибутов, а не из строки в onerror:
+    // так кавычки в названии блюда больше не ломают обработчик
+    function handleImageError(imgEl) {
+      const parent = imgEl.parentElement;
+      if (!parent) return;
+      const emoji = imgEl.dataset.emoji || '🔥';
+      const title = imgEl.dataset.title || '';
+      imgEl.remove();
+      const fallback = document.createElement('div');
+      fallback.className = 'w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#F3ECE2] to-[#E6DCCF] text-center p-4 select-none';
+      fallback.innerHTML = `
+        <span class="text-4xl mb-1.5">${esc(emoji)}</span>
+        <span class="text-[12px] font-semibold text-[#6F5F52] line-clamp-1">${esc(title)}</span>
+      `;
+      parent.appendChild(fallback);
+    }
+
+    let toastTimer = null;
+    function showToast(message) {
+      const banner = document.getElementById('toastBanner');
+      const msgEl = document.getElementById('toastMessage');
+      msgEl.textContent = message;
+      banner.classList.remove('opacity-0', '-translate-y-2');
+      banner.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        banner.classList.remove('opacity-100', 'translate-y-0');
+        banner.classList.add('opacity-0', '-translate-y-2');
+      }, 2400);
+    }
+
+    /* ==========================================================================
+       B2B LIVE PITCH CUSTOMIZER («ПРИМЕРКА БРЕНДА» ЗА 5 СЕКУНД)
+       ========================================================================== */
+    function loadSavedPitchBrand() {
+      try {
+        const raw = localStorage.getItem(PITCH_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state.brand = { ...state.brand, ...parsed };
+        }
+      } catch (e) {
+        console.warn('Ошибка чтения сохранённого бренда:', e);
+      }
+    }
+
+    function savePitchBrand() {
+      try {
+        localStorage.setItem(PITCH_STORAGE_KEY, JSON.stringify(state.brand));
+      } catch (e) {
+        console.warn('Не удалось сохранить настройки бренда:', e);
+      }
+    }
+
+    function applyBrandToUI() {
+      const { name, subtitle, accentColor, accentRgb, logoDataUrl } = state.brand;
+
+      // 1. Обновляем CSS-переменные цвета
+      document.documentElement.style.setProperty('--accent', accentColor);
+      document.documentElement.style.setProperty('--accent-rgb', accentRgb);
+      document.documentElement.style.setProperty('--accent-soft', `rgba(${accentRgb}, 0.10)`);
+
+      // 2. Обновляем текстовые элементы по всему макету
+      document.title = `${name} — Доставка шашлыка и блюд на углях`;
+      document.getElementById('headerBrandName').textContent = name;
+      document.getElementById('headerSubtitle').textContent = subtitle;
+      document.getElementById('footerBrandInfo').textContent = `${name} • ${subtitle}`;
+      document.getElementById('cartDrawerTitle').textContent = `Ваш заказ • ${name}`;
+      document.getElementById('receiptBrandName').textContent = name;
+
+      // 3. Обновляем логотип в шапке
+      const placeholder = document.getElementById('defaultLogoPlaceholder');
+      const customImg = document.getElementById('customLogoImg');
+      const logoBtn = document.getElementById('brandLogoButton');
+
+      if (logoDataUrl) {
+        customImg.src = logoDataUrl;
+        customImg.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        logoBtn.classList.remove('border-dashed', 'border-[#CDBFAF]');
+        logoBtn.classList.add('border-solid', 'border-black/10');
+      } else {
+        customImg.src = '';
+        customImg.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        logoBtn.classList.add('border-dashed', 'border-[#CDBFAF]');
+        logoBtn.classList.remove('border-solid', 'border-black/10');
+      }
+
+      // 4. Синхронизируем поля внутри поповера «Примерка бренда»
+      const nameInput = document.getElementById('customBrandNameInput');
+      const subInput = document.getElementById('customSubtitleInput');
+      if (nameInput && nameInput.value !== (name === SITE_CONFIG.defaultBrandName ? '' : name)) {
+        nameInput.value = name === SITE_CONFIG.defaultBrandName ? '' : name;
+      }
+      if (subInput && subInput.value !== (subtitle === SITE_CONFIG.defaultSubtitle ? '' : subtitle)) {
+        subInput.value = subtitle === SITE_CONFIG.defaultSubtitle ? '' : subtitle;
+      }
+
+      // 5. Подсвечиваем активный цветовой свотч
+      document.querySelectorAll('.swatch-btn').forEach(btn => {
+        const isMatch = btn.getAttribute('data-swatch') === accentColor;
+        if (isMatch) {
+          btn.className = 'swatch-btn flex flex-col items-center gap-1 p-2 rounded-xl border border-accent bg-accent-soft transition-all cursor-pointer';
+        } else {
+          btn.className = 'swatch-btn flex flex-col items-center gap-1 p-2 rounded-xl border border-transparent bg-[#F3ECE2] hover:bg-[#EADFD2] transition-all cursor-pointer';
+        }
+      });
+
+      updateCartUI();
+    }
+
+    function toggleBrandCustomizer() {
+      const pop = document.getElementById('brandCustomizerPopover');
+      pop.classList.toggle('hidden');
+    }
+
+    function closeBrandCustomizer() {
+      document.getElementById('brandCustomizerPopover').classList.add('hidden');
+    }
+
+    function handleBrandNameInput(val) {
+      const trimmed = val.trim();
+      state.brand.name = trimmed || SITE_CONFIG.defaultBrandName;
+      savePitchBrand();
+      applyBrandToUI();
+    }
+
+    function handleBrandSubtitleInput(val) {
+      const trimmed = val.trim();
+      state.brand.subtitle = trimmed || SITE_CONFIG.defaultSubtitle;
+      savePitchBrand();
+      applyBrandToUI();
+    }
+
+    function selectAccentSwatch(hex, rgb) {
+      state.brand.accentColor = hex;
+      state.brand.accentRgb = rgb;
+      savePitchBrand();
+      applyBrandToUI();
+    }
+
+    function triggerLogoUpload() {
+      const input = document.getElementById('logoUploadInput');
+      if (input) input.click();
+    }
+
+    function handleLogoFileSelect(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          const canvas = document.createElement('canvas');
+          const size = 240;
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+
+          const minSide = Math.min(img.width, img.height);
+          const sx = (img.width - minSide) / 2;
+          const sy = (img.height - minSide) / 2;
+
+          ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+          state.brand.logoDataUrl = canvas.toDataURL('image/png', 0.92);
+          savePitchBrand();
+          applyBrandToUI();
+          showToast('Логотип заведения загружен');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetBrandCustomizer() {
+      state.brand = {
+        name: SITE_CONFIG.defaultBrandName,
+        subtitle: SITE_CONFIG.defaultSubtitle,
+        accentColor: SITE_CONFIG.defaultAccentColor,
+        accentRgb: SITE_CONFIG.defaultAccentRgb,
+        logoDataUrl: ''
+      };
+      try {
+        localStorage.removeItem(PITCH_STORAGE_KEY);
+      } catch (e) {}
+      document.getElementById('customBrandNameInput').value = '';
+      document.getElementById('customSubtitleInput').value = '';
+      applyBrandToUI();
+      showToast('Макет сброшен к исходному виду');
+    }
+
+    // Закрытие поповера при клике вне его
+    document.addEventListener('click', (e) => {
+      const pop = document.getElementById('brandCustomizerPopover');
+      const btn = document.getElementById('brandPitchBtn');
+      if (!pop || pop.classList.contains('hidden')) return;
+      if (!pop.contains(e.target) && !btn.contains(e.target)) {
+        closeBrandCustomizer();
+      }
+    });
+
+    /* ==========================================================================
+       BENTO GRID: 2 КЛЮЧЕВЫЕ КАРТОЧКИ НА ПЕРВОМ ЭКРАНЕ
+       ========================================================================== */
+    function renderBentoHits() {
+      const grid = document.getElementById('bentoHitsGrid');
+      const featuredSet = MENU_ITEMS.find(m => m.isBentoFeatured) || MENU_ITEMS[0];
+      const setIdx = featuredSet.defaultOptionIndex || 0;
+      const setOpt = featuredSet.options[setIdx];
+
+      grid.innerHTML = `
+        <!-- Bento-карточка 1: Фирменный сет на компанию — 2 кг -->
+        <div class="md:col-span-7 apple-card overflow-hidden flex flex-col sm:flex-row">
+          <div class="sm:w-[46%] h-48 sm:h-auto relative overflow-hidden bg-[#F3ECE2] shrink-0">
+            <img
+              src="${esc(featuredSet.image)}"
+              alt="${esc(featuredSet.title)}"
+              data-emoji="${esc(featuredSet.fallbackEmoji)}"
+              data-title="${esc(featuredSet.title)}"
+              onerror="handleImageError(this)"
+              class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+            />
+            <span class="absolute top-3 left-3 bg-[#2B1D16]/85 backdrop-blur-md text-white text-[11px] font-semibold px-3 py-1 rounded-full">
+              🔥 Хит для компании
+            </span>
+          </div>
+          <div class="p-5 flex flex-col justify-between flex-1">
+            <div>
+              <div class="text-[12px] font-bold text-accent uppercase tracking-wide mb-1 tabular-nums">
+                Фирменный сет • ${setOpt.label}
+              </div>
+              <h3 class="text-[20px] font-bold text-[#2B1D16] leading-snug tracking-tight">
+                Фирменный сет на компанию — ${setOpt.label}
+              </h3>
+              <p class="text-[13px] text-[#8A7A6D] mt-1.5 line-clamp-3 leading-relaxed">
+                ${featuredSet.description}
+              </p>
+            </div>
+            <div class="pt-4 mt-2 flex items-center justify-between gap-3">
+              <div>
+                <div class="text-[11px] text-[#8A7A6D]">${esc(SITE_CONFIG.groupSizeLabel)}</div>
+                <div class="text-[21px] font-extrabold text-[#2B1D16] tabular-nums">${formatPrice(setOpt.price)}</div>
+              </div>
+              <button
+                type="button"
+                onclick="addToCart('${featuredSet.id}', ${setIdx})"
+                class="bg-accent hover:opacity-95 text-white font-semibold text-[13.5px] px-5 py-2.5 rounded-xl shadow-sm transition-all active:scale-95 cursor-pointer"
+              >
+                + В корзину
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento-карточка 2: Бесплатная доставка от 1 500 ₽ • −10% за самовывоз -->
+        <div class="md:col-span-5 apple-card p-5 sm:p-6 flex flex-col justify-between bg-gradient-to-br from-white to-[#F3ECE2]/70">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-soft text-accent text-[11.5px] font-bold mb-3">
+              <span>⚡</span>
+              <span>Выгодно напрямую</span>
+            </div>
+            <h3 class="text-[20px] sm:text-[22px] font-extrabold text-[#2B1D16] leading-snug tracking-tight tabular-nums">
+              Бесплатная доставка от ${formatPrice(SITE_CONFIG.delivery.freeThreshold)} • −${SITE_CONFIG.delivery.pickupDiscountPercent}% за самовывоз
+            </h3>
+            <p class="text-[13px] text-[#8A7A6D] mt-2 leading-relaxed">
+              Оформляйте заказ напрямую на сайте без наценок агрегаторов. При самовывозе автоматически применится скидка ${SITE_CONFIG.delivery.pickupDiscountPercent}% на всё меню.
+            </p>
+          </div>
+
+          <div class="pt-4 mt-4 border-t border-[#E8DED2] flex items-center justify-between gap-2">
+            <span class="text-[12px] font-medium text-[#6F5F52]">
+              Готовность к выдаче ~${SITE_CONFIG.prepTimeMinutes} мин
+            </span>
+            <button
+              type="button"
+              onclick="selectCategory('shashlik')"
+              class="bg-[#2B1D16] hover:bg-black text-white font-semibold text-[13px] px-4 py-2 rounded-xl transition-all active:scale-95 cursor-pointer shrink-0"
+            >
+              Выбрать мясо →
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ==========================================================================
+       ЛИПКАЯ НАВИГАЦИЯ ПО КАТЕГОРИЯМ (STICKY IOS PILLS)
+       ========================================================================== */
+    function renderCategoryPills() {
+      const html = SITE_CONFIG.categories.map(cat => {
+        const isActive = cat.id === state.activeCategory;
+        return `
+          <button
+            type="button"
+            data-cat-pill="${cat.id}"
+            onclick="selectCategory('${cat.id}')"
+            class="px-4 py-2 rounded-full text-[13.5px] font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+              isActive
+                ? 'bg-[#2B1D16] text-white shadow-sm'
+                : 'bg-white text-[#2B1D16] hover:bg-[#F3ECE2] border border-[#E8DED2]'
+            }"
+          >
+            ${cat.title}
+          </button>
+        `;
+      }).join('');
+      ['categoryPills', 'categoryPillsFixed'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+      });
+    }
+
+    function setActiveCategoryPill(catId) {
+      if (state.activeCategory === catId) return;
+      state.activeCategory = catId;
+      document.querySelectorAll('[data-cat-pill]').forEach(btn => {
+        const isMatch = btn.getAttribute('data-cat-pill') === catId;
+        if (isMatch) {
+          btn.className = 'px-4 py-2 rounded-full text-[13.5px] font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 bg-[#2B1D16] text-white shadow-sm';
+          // Крутим только ленту по горизонтали (scrollIntoView дёргал бы всю страницу)
+          const box = btn.parentElement;
+          if (box && box.clientWidth) {
+            const offset = btn.getBoundingClientRect().left - box.getBoundingClientRect().left;
+            box.scrollTo({ left: box.scrollLeft + offset - (box.clientWidth - btn.offsetWidth) / 2, behavior: 'smooth' });
+          }
+        } else {
+          btn.className = 'px-4 py-2 rounded-full text-[13.5px] font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 bg-white text-[#2B1D16] hover:bg-[#F3ECE2] border border-[#E8DED2]';
+        }
+      });
+    }
+
+    function selectCategory(catId) {
+      setActiveCategoryPill(catId);
+      if (catId === 'all') {
+        const menuTop = document.getElementById('menuContainer');
+        const y = menuTop.getBoundingClientRect().top + window.scrollY - 135;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+        return;
+      }
+      const section = document.getElementById(`section-${catId}`);
+      if (section) {
+        const y = section.getBoundingClientRect().top + window.scrollY - 130;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }
+
+    /* ==========================================================================
+       КАТАЛОГ БЛЮД С iPHONE-КОНФИГУРАТОРОМ ГРАММОВОК
+       ========================================================================== */
+    function renderMenu() {
+      const container = document.getElementById('menuContainer');
+      const contentCategories = SITE_CONFIG.categories.filter(c => c.id !== 'all');
+
+      container.innerHTML = contentCategories.map(cat => {
+        const items = MENU_ITEMS.filter(item => item.category === cat.id);
+        if (!items.length) return '';
+
+        return `
+          <section id="section-${cat.id}" data-menu-section="${cat.id}" class="scroll-mt-32">
+            <div class="flex items-baseline justify-between mb-4">
+              <h3 class="text-[22px] sm:text-[25px] font-bold tracking-tight text-[#2B1D16]">
+                ${cat.title}
+              </h3>
+              <span class="text-[12.5px] font-medium text-[#8A7A6D] tabular-nums">
+                ${items.length} ${plural(items.length, 'позиция', 'позиции', 'позиций')}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+              ${items.map(item => renderMenuCardHTML(item)).join('')}
+            </div>
+          </section>
+        `;
+      }).join('');
+
+      setupScrollSpy();
+    }
+
+    function renderMenuCardHTML(item) {
+      const selectedIdx = state.selectedOptions[item.id] ?? 0;
+      const activeOption = item.options[selectedIdx];
+      const cartKey = `${item.id}_${selectedIdx}`;
+      const inCartQty = state.cart[cartKey]?.qty || 0;
+
+      const colsClass =
+        item.options.length === 1 ? 'grid-cols-1' :
+        item.options.length === 2 ? 'grid-cols-2' :
+        item.options.length === 3 ? 'grid-cols-3' : 'grid-cols-4';
+
+      return `
+        <article id="card-${item.id}" class="apple-card overflow-hidden flex flex-col justify-between">
+          <div>
+            <div class="relative aspect-[16/10] bg-[#F3ECE2] overflow-hidden">
+              <img
+                src="${esc(item.image)}"
+                alt="${esc(item.title)}"
+                loading="lazy"
+                data-emoji="${esc(item.fallbackEmoji)}"
+                data-title="${esc(item.title)}"
+                onerror="handleImageError(this)"
+                class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+              />
+              ${item.badge ? `
+                <span class="absolute top-3 left-3 bg-white/92 backdrop-blur-md text-[#2B1D16] text-[11px] font-semibold px-2.5 py-1 rounded-full shadow-2xs">
+                  ${item.badge}
+                </span>
+              ` : ''}
+            </div>
+
+            <div class="p-4 sm:p-5 pb-3">
+              <h4 class="text-[17px] font-bold text-[#2B1D16] leading-snug tracking-tight">
+                ${item.title}
+              </h4>
+              <p class="text-[13px] text-[#8A7A6D] mt-1.5 line-clamp-2 leading-relaxed">
+                ${item.description}
+              </p>
+            </div>
+          </div>
+
+          <div class="px-4 sm:px-5 pb-4 sm:pb-5 pt-1 space-y-3">
+            ${item.options.length > 1 ? `
+              <div class="ios-segment-group ${colsClass}" role="group" aria-label="Выбор граммовки">
+                ${item.options.map((opt, idx) => `
+                  <button
+                    type="button"
+                    onclick="selectOption('${item.id}', ${idx})"
+                    class="ios-segment-btn tabular-nums ${idx === selectedIdx ? 'active' : ''}"
+                  >
+                    ${opt.label}
+                  </button>
+                `).join('')}
+              </div>
+            ` : `
+              <div class="text-[12.5px] font-medium text-[#8A7A6D] bg-[#F3ECE2] rounded-xl px-3 py-1.5 inline-block tabular-nums">
+                Порция: <span class="text-[#2B1D16] font-semibold">${activeOption.label}</span>
+              </div>
+            `}
+
+            ${inCartQty === 0 ? `
+              <button
+                type="button"
+                onclick="addToCart('${item.id}', ${selectedIdx})"
+                class="w-full bg-accent hover:opacity-95 text-white font-semibold text-[14px] py-3 px-4 rounded-xl shadow-2xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 tabular-nums cursor-pointer"
+              >
+                <span>Добавить</span>
+                <span class="opacity-70">•</span>
+                <span>${formatPrice(activeOption.price)}</span>
+              </button>
+            ` : `
+              <div class="w-full bg-[#2B1D16] text-white rounded-xl p-1 flex items-center justify-between tabular-nums">
+                <button
+                  type="button"
+                  onclick="changeCartQty('${cartKey}', -1)"
+                  aria-label="Уменьшить количество"
+                  class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-lg font-bold transition-colors cursor-pointer"
+                >
+                  −
+                </button>
+                <div class="text-center">
+                  <div class="text-[13.5px] font-bold leading-tight">${inCartQty} шт • ${formatPrice(activeOption.price * inCartQty)}</div>
+                  <div class="text-[10.5px] text-white/65 leading-tight">${activeOption.label}</div>
+                </div>
+                <button
+                  type="button"
+                  onclick="changeCartQty('${cartKey}', 1)"
+                  aria-label="Увеличить количество"
+                  class="w-10 h-10 rounded-xl bg-accent hover:opacity-90 flex items-center justify-center text-lg font-bold transition-colors cursor-pointer"
+                >
+                  +
+                </button>
+              </div>
+            `}
+          </div>
+        </article>
+      `;
+    }
+
+    function refreshSingleCard(itemId) {
+      const item = MENU_ITEMS.find(m => m.id === itemId);
+      const oldCard = document.getElementById(`card-${itemId}`);
+      if (!item || !oldCard) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = renderMenuCardHTML(item).trim();
+      oldCard.replaceWith(wrapper.firstChild);
+    }
+
+    function selectOption(itemId, optionIdx) {
+      state.selectedOptions[itemId] = optionIdx;
+      refreshSingleCard(itemId);
+    }
+
+    function setupScrollSpy() {
+      const sections = document.querySelectorAll('[data-menu-section]');
+      if (!sections.length) return;
+
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const catId = entry.target.getAttribute('data-menu-section');
+              setActiveCategoryPill(catId);
+            }
+          });
+        },
+        { rootMargin: '-145px 0px -65% 0px', threshold: 0 }
+      );
+
+      sections.forEach(sec => observer.observe(sec));
+    }
+
+    /* ==========================================================================
+       ЛОГИКА КОРЗИНЫ, ДОПРОДАЖ И СКИДКИ НА САМОВЫВОЗ
+       ========================================================================== */
+    function addToCart(itemId, optionIdx) {
+      const item = MENU_ITEMS.find(m => m.id === itemId);
+      if (!item) return;
+
+      const opt = item.options[optionIdx];
+      const key = `${itemId}_${optionIdx}`;
+
+      if (state.cart[key]) {
+        state.cart[key].qty += 1;
+      } else {
+        state.cart[key] = {
+          key,
+          itemId: item.id,
+          title: item.title,
+          optionLabel: opt.label,
+          grams: opt.grams,
+          price: opt.price,
+          qty: 1,
+          emoji: item.fallbackEmoji || '🔥'
+        };
+      }
+
+      refreshSingleCard(itemId);
+      updateCartUI();
+      showToast(`Добавлено: ${item.title} (${opt.label})`);
+    }
+
+    function addUpsellToCart(upsellId) {
+      const upsell = SITE_CONFIG.upsells.find(u => u.id === upsellId);
+      if (!upsell) return;
+
+      const key = `upsell_${upsell.id}`;
+      if (state.cart[key]) {
+        state.cart[key].qty += 1;
+      } else {
+        state.cart[key] = {
+          key,
+          itemId: upsell.id,
+          title: upsell.title,
+          optionLabel: upsell.weightLabel,
+          grams: upsell.grams,
+          price: upsell.price,
+          qty: 1,
+          emoji: upsell.emoji
+        };
+      }
+
+      updateCartUI();
+      showToast(`Добавлено: ${upsell.title}`);
+    }
+
+    function changeCartQty(key, delta) {
+      const entry = state.cart[key];
+      if (!entry) return;
+
+      entry.qty += delta;
+      const itemId = entry.itemId;
+
+      if (entry.qty <= 0) {
+        delete state.cart[key];
+      }
+
+      refreshSingleCard(itemId);
+      updateCartUI();
+
+      if (Object.keys(state.cart).length === 0) {
+        closeCartDrawer();
+      }
+    }
+
+    function clearCart() {
+      const itemIds = new Set(Object.values(state.cart).map(e => e.itemId));
+      state.cart = {};
+      itemIds.forEach(id => refreshSingleCard(id));
+      updateCartUI();
+      closeCartDrawer();
+      showToast('Корзина очищена');
+    }
+
+    function getCartTotals() {
+      const items = Object.values(state.cart);
+      let totalQty = 0;
+      let totalGrams = 0;
+      let subtotal = 0;
+
+      items.forEach(item => {
+        totalQty += item.qty;
+        totalGrams += item.grams * item.qty;
+        subtotal += item.price * item.qty;
+      });
+
+      const isPickup = state.deliveryMode === 'pickup';
+      const discount = isPickup
+        ? Math.round(subtotal * (SITE_CONFIG.delivery.pickupDiscountPercent / 100))
+        : 0;
+
+      const afterDiscount = subtotal - discount;
+      const deliveryFee = isPickup
+        ? 0
+        : afterDiscount >= SITE_CONFIG.delivery.freeThreshold || subtotal === 0
+          ? 0
+          : SITE_CONFIG.delivery.fee;
+
+      const finalTotal = afterDiscount + deliveryFee;
+
+      return {
+        items,
+        totalQty,
+        totalGrams,
+        subtotal,
+        discount,
+        deliveryFee,
+        finalTotal,
+        isPickup
+      };
+    }
+
+    function updateCartUI() {
+      const totals = getCartTotals();
+      const island = document.getElementById('dynamicIslandCart');
+
+      // 1. Плавающая капсула снизу: Корзина • 700 г • 980 ₽ →
+      if (totals.totalQty > 0) {
+        island.classList.remove('hidden-island');
+        island.classList.add('visible-island');
+        document.getElementById('islandCountBadge').textContent = totals.totalQty;
+        document.getElementById('islandSummaryLine').textContent =
+          `Корзина • ${formatWeight(totals.totalGrams)} • ${formatPrice(totals.finalTotal)}`;
+      } else {
+        island.classList.remove('visible-island');
+        island.classList.add('hidden-island');
+      }
+
+      // 2. Шапка шторки корзины
+      document.getElementById('cartHeaderSubtitle').textContent =
+        `${totals.totalQty} шт • ${formatWeight(totals.totalGrams)}`;
+
+      // 3. Список выбранных позиций
+      const listEl = document.getElementById('cartItemsList');
+      listEl.innerHTML = totals.items.map(item => `
+        <div class="bg-white rounded-xl p-3 border border-[#E8DED2] flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-11 h-11 rounded-xl bg-[#F3ECE2] flex items-center justify-center text-xl shrink-0">
+              ${item.emoji}
+            </div>
+            <div class="min-w-0">
+              <div class="text-[14px] font-semibold text-[#2B1D16] truncate">${item.title}</div>
+              <div class="text-[12px] text-[#8A7A6D] tabular-nums">
+                ${item.optionLabel} • ${formatPrice(item.price * item.qty)}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1.5 bg-[#F3ECE2] rounded-xl p-1 shrink-0 tabular-nums">
+            <button
+              type="button"
+              onclick="changeCartQty('${item.key}', -1)"
+              class="w-7 h-7 rounded-lg bg-white text-[#2B1D16] font-bold text-sm shadow-2xs hover:bg-black/[0.04] cursor-pointer"
+            >
+              −
+            </button>
+            <span class="w-6 text-center text-[13px] font-bold text-[#2B1D16]">${item.qty}</span>
+            <button
+              type="button"
+              onclick="changeCartQty('${item.key}', 1)"
+              class="w-7 h-7 rounded-lg bg-white text-[#2B1D16] font-bold text-sm shadow-2xs hover:bg-black/[0.04] cursor-pointer"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      // 4. Лента допродаж «К мясу идеально подойдёт»
+      renderUpsells();
+
+      // 5. Прогресс-бар бесплатной доставки или информация о самовывозе
+      const statusBox = document.getElementById('deliveryStatusBox');
+      const addressWrapper = document.getElementById('addressFieldWrapper');
+
+      if (totals.isPickup) {
+        addressWrapper.classList.add('hidden');
+        statusBox.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <span class="truncate">📍 Самовывоз: <strong>${esc(SITE_CONFIG.addressShort)}</strong></span>
+            <span class="text-emerald-600 font-semibold shrink-0">Скидка −${SITE_CONFIG.delivery.pickupDiscountPercent}%</span>
+          </div>
+        `;
+      } else {
+        addressWrapper.classList.remove('hidden');
+        const threshold = SITE_CONFIG.delivery.freeThreshold;
+        const progressPercent = Math.min(100, Math.round((totals.subtotal / threshold) * 100));
+        const remaining = threshold - totals.subtotal;
+
+        if (remaining > 0) {
+          statusBox.innerHTML = `
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-[12px]">
+                <span>До бесплатной доставки:</span>
+                <strong class="tabular-nums text-[#2B1D16]">${formatPrice(remaining)}</strong>
+              </div>
+              <div class="w-full h-1.5 bg-black/[0.08] rounded-full overflow-hidden">
+                <div class="h-full bg-accent rounded-full transition-all duration-300" style="width: ${progressPercent}%"></div>
+              </div>
+            </div>
+          `;
+        } else {
+          statusBox.innerHTML = `
+            <div class="space-y-1.5">
+              <div class="text-emerald-600 font-semibold text-[12.5px]">
+                🎉 Бесплатная доставка активирована!
+              </div>
+              <div class="w-full h-1.5 bg-emerald-500/20 rounded-full overflow-hidden">
+                <div class="h-full bg-emerald-500 rounded-full w-full"></div>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // 6. Итоговый расчёт
+      document.getElementById('summaryWeight').textContent = formatWeight(totals.totalGrams);
+      document.getElementById('summarySubtotal').textContent = formatPrice(totals.subtotal);
+
+      const discountRow = document.getElementById('summaryDiscountRow');
+      if (totals.discount > 0) {
+        discountRow.classList.remove('hidden');
+        discountRow.classList.add('flex');
+        document.getElementById('summaryDiscount').textContent = `−${formatPrice(totals.discount)}`;
+      } else {
+        discountRow.classList.add('hidden');
+        discountRow.classList.remove('flex');
+      }
+
+      document.getElementById('summaryDelivery').textContent =
+        totals.deliveryFee === 0 ? 'Бесплатно' : formatPrice(totals.deliveryFee);
+
+      document.getElementById('summaryFinalTotal').textContent = formatPrice(totals.finalTotal);
+      document.getElementById('submitBtnTotal').textContent = formatPrice(totals.finalTotal);
+    }
+
+    function renderUpsells() {
+      const container = document.getElementById('upsellCarousel');
+      container.innerHTML = SITE_CONFIG.upsells.map(u => {
+        const inCart = state.cart[`upsell_${u.id}`];
+        return `
+          <div class="w-36 shrink-0 bg-[#F3ECE2] rounded-xl p-2.5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xl">${u.emoji}</span>
+                <span class="text-[11px] text-[#8A7A6D] tabular-nums">${u.weightLabel}</span>
+              </div>
+              <div class="text-[12.5px] font-semibold text-[#2B1D16] leading-snug line-clamp-2">
+                ${u.title}
+              </div>
+            </div>
+            <div class="pt-2.5 mt-1 flex items-center justify-between">
+              <span class="text-[13px] font-bold text-[#2B1D16] tabular-nums">${formatPrice(u.price)}</span>
+              <button
+                type="button"
+                onclick="addUpsellToCart('${u.id}')"
+                class="px-2.5 py-1 rounded-xl text-[12px] font-bold transition-all active:scale-95 cursor-pointer ${
+                  inCart
+                    ? 'bg-[#2B1D16] text-white'
+                    : 'bg-white text-[#2B1D16] shadow-2xs hover:bg-black/[0.05]'
+                }"
+              >
+                ${inCart ? `✓ ${inCart.qty}` : '+'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setDeliveryMode(mode) {
+      state.deliveryMode = mode;
+      document.getElementById('modeDeliveryBtn').classList.toggle('active', mode === 'delivery');
+      document.getElementById('modePickupBtn').classList.toggle('active', mode === 'pickup');
+      updateCartUI();
+    }
+
+    function setPaymentMethod(btn) {
+      state.paymentMethod = btn.getAttribute('data-pay');
+      document.querySelectorAll('.pay-pill').forEach(el => {
+        el.className = 'pay-pill border border-transparent bg-[#F3ECE2] text-[#6F5F52] rounded-xl py-2 px-2 text-[12px] font-semibold text-center transition-all cursor-pointer';
+      });
+      btn.className = 'pay-pill active border border-accent bg-accent-soft text-[#2B1D16] rounded-xl py-2 px-2 text-[12px] font-semibold text-center transition-all cursor-pointer';
+    }
+
+    /* ==========================================================================
+       УПРАВЛЕНИЕ ШТОРКОЙ КОРЗИНЫ
+       ========================================================================== */
+    function openCartDrawer() {
+      if (Object.keys(state.cart).length === 0) return;
+      updateCartUI();
+      const drawer = document.getElementById('cartDrawer');
+      const backdrop = document.getElementById('cartBackdrop');
+      const panel = document.getElementById('cartPanel');
+
+      drawer.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+
+      requestAnimationFrame(() => {
+        backdrop.classList.remove('opacity-0');
+        backdrop.classList.add('opacity-100');
+        panel.classList.remove('translate-y-full', 'sm:translate-y-6', 'sm:opacity-0');
+        panel.classList.add('translate-y-0', 'sm:translate-y-0', 'sm:opacity-100');
+      });
+    }
+
+    function closeCartDrawer() {
+      const drawer = document.getElementById('cartDrawer');
+      const backdrop = document.getElementById('cartBackdrop');
+      const panel = document.getElementById('cartPanel');
+
+      backdrop.classList.remove('opacity-100');
+      backdrop.classList.add('opacity-0');
+      panel.classList.remove('translate-y-0', 'sm:translate-y-0', 'sm:opacity-100');
+      panel.classList.add('translate-y-full', 'sm:translate-y-6', 'sm:opacity-0');
+
+      setTimeout(() => {
+        drawer.classList.add('hidden');
+        document.body.style.overflow = '';
+      }, 300);
+    }
+
+    /* ==========================================================================
+       ОФОРМЛЕНИЕ ЗАКАЗА И ДЕМОНСТРАЦИЯ ЧАТА TELEGRAM ДЛЯ ВЛАДЕЛЬЦА
+       ========================================================================== */
+    function formatPhoneInput(input) {
+      let digits = input.value.replace(/\D/g, '');
+      if (!digits) {
+        input.value = '';
+        return;
+      }
+      if (digits[0] === '8' || digits[0] === '7') {
+        digits = '7' + digits.slice(1);
+      } else {
+        digits = '7' + digits;
+      }
+      digits = digits.slice(0, 11);
+
+      let formatted = '+7';
+      if (digits.length > 1) formatted += ' (' + digits.slice(1, 4);
+      if (digits.length >= 4) formatted += ') ' + digits.slice(4, 7);
+      if (digits.length >= 7) formatted += '-' + digits.slice(7, 9);
+      if (digits.length >= 9) formatted += '-' + digits.slice(9, 11);
+
+      input.value = formatted;
+    }
+
+    function buildOrderMessage(order, orderNum) {
+      const itemsLines = order.items
+        .map((i, idx) => `${idx + 1}. ${i.title} (${i.optionLabel}) × ${i.qty} = ${formatPrice(i.price * i.qty)}`)
+        .join('\n');
+      return [
+        `🔥 НОВЫЙ ЗАКАЗ #${orderNum} — ${order.brand}`,
+        ``,
+        `👤 Клиент: ${order.name}`,
+        `📞 Телефон: ${order.phone}`,
+        order.mode === 'pickup'
+          ? `🏃 Самовывоз • Скидка −${SITE_CONFIG.delivery.pickupDiscountPercent}%`
+          : `🛵 Доставка: ${order.address}`,
+        `💳 Оплата: ${order.payment}`,
+        order.comment ? `💬 Комментарий: ${order.comment}` : null,
+        ``,
+        `📋 Состав заказа (${formatWeight(order.totalGrams)}):`,
+        itemsLines,
+        ``,
+        order.discount > 0 ? `🎁 Скидка самовывоз: −${formatPrice(order.discount)}` : null,
+        `🚚 Доставка: ${order.deliveryFee === 0 ? 'Бесплатно' : formatPrice(order.deliveryFee)}`,
+        `💰 ИТОГО К ОПЛАТЕ: ${formatPrice(order.total)}`
+      ].filter(v => v !== null).join('\n');
+    }
+
+    function setSubmitLoading(isLoading) {
+      const btn = document.getElementById('submitOrderBtn');
+      btn.disabled = isLoading;
+      document.getElementById('submitBtnLabel').textContent = isLoading ? 'Отправляем…' : 'Оформить заказ';
+    }
+
+    function resetCartAfterOrder() {
+      const itemIds = new Set(Object.values(state.cart).map(e => e.itemId));
+      state.cart = {};
+      itemIds.forEach(id => refreshSingleCard(id));
+      updateCartUI();
+      closeCartDrawer();
+      document.getElementById('inputComment').value = '';
+    }
+
+    let isSubmitting = false;
+
+    async function submitOrder() {
+      if (isSubmitting) return;
+
+      const nameInput = document.getElementById('inputName');
+      const phoneInput = document.getElementById('inputPhone');
+      const addressInput = document.getElementById('inputAddress');
+      const consentInput = document.getElementById('inputConsent');
+
+      const name = nameInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const address = addressInput.value.trim();
+      const comment = document.getElementById('inputComment').value.trim();
+      const phoneDigits = phone.replace(/\D/g, '');
+
+      if (!name) { nameInput.focus(); showToast('Введите ваше имя'); return; }
+      if (phoneDigits.length < 11) { phoneInput.focus(); showToast('Укажите корректный номер телефона'); return; }
+      if (state.deliveryMode === 'delivery' && !address) { addressInput.focus(); showToast('Укажите адрес доставки'); return; }
+      if (!consentInput.checked) { consentInput.focus(); showToast('Нужно согласие на обработку данных'); return; }
+      if (!DEMO_MODE && !isOpenNow()) {
+        showToast(`Сейчас закрыто. Принимаем заказы с ${SITE_CONFIG.hours.open} до ${SITE_CONFIG.hours.close}`);
+        return;
+      }
+
+      const totals = getCartTotals();
+      const order = {
+        brand: state.brand.name,
+        name, phone, comment,
+        address: state.deliveryMode === 'delivery' ? address : '',
+        mode: state.deliveryMode,
+        payment: state.paymentMethod,
+        items: totals.items.map(i => ({ id: i.itemId, title: i.title, optionLabel: i.optionLabel, grams: i.grams, price: i.price, qty: i.qty })),
+        totalGrams: totals.totalGrams,
+        subtotal: totals.subtotal,
+        discount: totals.discount,
+        deliveryFee: totals.deliveryFee,
+        total: totals.finalTotal,
+        consent: true,
+        website: document.getElementById('inputWebsite').value // ловушка для ботов
+      };
+
+      // ---------- ДЕМО: показываем владельцу, как заказ придёт в Telegram ----------
+      if (DEMO_MODE) {
+        const orderNum = state.orderCounter++;
+        showDemoTelegram(buildOrderMessage(order, orderNum), orderNum);
+        resetCartAfterOrder();
+        return;
+      }
+
+      // ---------- БОЕВОЙ РЕЖИМ: «Принят» показываем только после ответа сервера ----------
+      isSubmitting = true;
+      setSubmitLoading(true);
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 15000);
+        const res = await fetch(SITE_CONFIG.orderEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(order),
+          signal: controller.signal
+        });
+        clearTimeout(timer);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) throw new Error(data.error || `HTTP ${res.status}`);
+
+        showCustomerSuccess(data.orderNumber, order);
+        resetCartAfterOrder();
+      } catch (err) {
+        console.warn('Заказ не отправлен:', err);
+        showToast(`Не получилось отправить заказ. Позвоните нам: ${SITE_CONFIG.phoneDisplay}`);
+      } finally {
+        isSubmitting = false;
+        setSubmitLoading(false);
+      }
+    }
+
+    function showCustomerSuccess(orderNumber, order) {
+      document.getElementById('customerOrderNumber').textContent = `#${orderNumber}`;
+      document.getElementById('customerOrderMode').textContent = order.mode === 'pickup' ? 'Самовывоз' : 'Доставка';
+      document.getElementById('customerOrderPay').textContent = order.payment;
+      document.getElementById('customerOrderTotal').textContent = formatPrice(order.total);
+      document.getElementById('customerCallLink').href = `tel:${SITE_CONFIG.phoneRaw}`;
+      const modal = document.getElementById('customerSuccessModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCustomerSuccess() {
+      const modal = document.getElementById('customerSuccessModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    function showDemoTelegram(telegramMessage, orderNum) {
+      const brandName = state.brand.name;
+      const initials = brandName
+        .split(/\s+/)
+        .slice(0, 2)
+        .map(w => w[0] || '')
+        .join('')
+        .toUpperCase() || 'ШЛ';
+
+      document.getElementById('receiptOrderNumber').textContent = `#${orderNum}`;
+      document.getElementById('receiptBrandName').textContent = brandName;
+      document.getElementById('tgBotAvatar').textContent = initials;
+      document.getElementById('tgBotTitle').textContent = `${brandName} • Заказы`;
+      document.getElementById('tgMessagePreview').textContent = telegramMessage;
+
+      const acceptBtn = document.getElementById('tgAcceptBtn');
+      acceptBtn.disabled = false;
+      acceptBtn.textContent = '✅ Принять в работу';
+      acceptBtn.className = 'w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[13px] py-2.5 px-4 rounded-xl transition-all active:scale-[0.99] cursor-pointer shadow-2xs';
+
+      const statusTag = document.getElementById('tgOrderStatusTag');
+      statusTag.textContent = 'Новый заказ';
+      statusTag.className = 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-800 shrink-0';
+
+      const successModal = document.getElementById('orderSuccessModal');
+      successModal.classList.remove('hidden');
+      successModal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function simulateAdminAccept() {
+      const acceptBtn = document.getElementById('tgAcceptBtn');
+      const statusTag = document.getElementById('tgOrderStatusTag');
+
+      acceptBtn.disabled = true;
+      acceptBtn.textContent = `🔥 Принят мангальщиком • Готовность ~${SITE_CONFIG.prepTimeMinutes} мин`;
+      acceptBtn.className = 'w-full bg-emerald-500/15 text-emerald-800 font-semibold text-[12.5px] py-2.5 px-4 rounded-xl cursor-default';
+
+      statusTag.textContent = 'В работе';
+      statusTag.className = 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-700 shrink-0';
+
+      showToast('Статус обновлён: заказ передан на мангал');
+    }
+
+    function closeSuccessModal() {
+      const successModal = document.getElementById('orderSuccessModal');
+      successModal.classList.add('hidden');
+      successModal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    /* ==========================================================================
+       ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
+       ========================================================================== */
+    /* Горизонтальные ленты на компьютере: колесо мыши, перетаскивание, стрелки */
+    function enableHorizontalScroll(el) {
+      if (!el || el.dataset.hscrollReady) return;
+      el.dataset.hscrollReady = '1';
+      const wrap = el.closest('[data-hscroll-wrap]');
+
+      const updateArrows = () => {
+        if (!wrap) return;
+        const max = el.scrollWidth - el.clientWidth;
+        wrap.classList.toggle('can-left', el.scrollLeft > 4);
+        wrap.classList.toggle('can-right', el.scrollLeft < max - 4);
+      };
+
+      // Вертикальное колесо → горизонтальная прокрутка (только если ленту есть куда крутить)
+      el.addEventListener('wheel', e => {
+        if (el.scrollWidth <= el.clientWidth) return;
+        if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; // тачпад уже листает вбок
+        const max = el.scrollWidth - el.clientWidth;
+        const atStart = el.scrollLeft <= 0 && e.deltaY < 0;
+        const atEnd = el.scrollLeft >= max - 1 && e.deltaY > 0;
+        if (atStart || atEnd) return; // дальше крутим страницу/шторку как обычно
+        e.preventDefault();
+        el.scrollLeft += e.deltaY;
+      }, { passive: false });
+
+      // Перетаскивание мышью
+      let startX = 0, startLeft = 0, moved = false, down = false;
+      el.addEventListener('pointerdown', e => {
+        if (e.pointerType !== 'mouse' || e.button !== 0) return;
+        down = true; moved = false;
+        startX = e.clientX; startLeft = el.scrollLeft;
+      });
+      window.addEventListener('pointermove', e => {
+        if (!down) return;
+        const dx = e.clientX - startX;
+        if (!moved && Math.abs(dx) > 5) { moved = true; el.classList.add('is-dragging'); }
+        if (moved) el.scrollLeft = startLeft - dx;
+      });
+      window.addEventListener('pointerup', () => {
+        if (!down) return;
+        down = false;
+        if (moved) {
+          // гасим «клик» после перетаскивания, чтобы не добавить товар случайно
+          const stop = ev => { ev.stopPropagation(); ev.preventDefault(); };
+          el.addEventListener('click', stop, { capture: true, once: true });
+          setTimeout(() => el.removeEventListener('click', stop, { capture: true }), 0);
+        }
+        el.classList.remove('is-dragging');
+      });
+
+      // Стрелки
+      if (wrap) {
+        wrap.querySelectorAll('[data-hscroll-arrow]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const dir = Number(btn.dataset.hscrollArrow);
+            el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: 'smooth' });
+          });
+        });
+        el.addEventListener('scroll', updateArrows, { passive: true });
+        new ResizeObserver(updateArrows).observe(el);
+        new MutationObserver(updateArrows).observe(el, { childList: true });
+        updateArrows();
+      }
+    }
+
+    function applyOpenStatus() {
+      const open = isOpenNow();
+      const text = open
+        ? `Открыто • заказ будет через ~${SITE_CONFIG.prepTimeMinutes} мин`
+        : `Закрыто • принимаем заказы с ${SITE_CONFIG.hours.open}`;
+      ['liveStatusDesktop', 'liveStatusMobile'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = text;
+        const dotWrap = el.previousElementSibling;
+        if (!dotWrap) return;
+        dotWrap.querySelectorAll('span').forEach(d => {
+          d.classList.toggle('bg-emerald-500', open);
+          d.classList.toggle('bg-[#CDBFAF]', !open);
+          if (d.classList.contains('absolute')) d.classList.toggle('live-dot', open);
+        });
+      });
+    }
+
+    /* Автоскрытие шапки, как адресная строка в мобильном Chrome:
+       шапка едет вверх ВМЕСТЕ с пальцем (по 1 px на 1 px прокрутки), без CSS-анимаций,
+       а когда палец отпустили — плавно доезжает до «показана» или «спрятана».
+       Так это работает одинаково плавно и на iPhone, и на Android, и на ПК. */
+    function setupAutoHideHeader() {
+      const header = document.getElementById('siteHeader');
+      const brand = document.getElementById('headerBrandRow');
+      const inlineNav = document.getElementById('categoryNav');
+      if (!header || !brand) return;
+      const root = document.documentElement;
+      const syncHeight = () => root.style.setProperty('--brand-h', brand.offsetHeight + 'px');
+      syncHeight();
+      new ResizeObserver(syncHeight).observe(brand);
+
+      let lastY = window.scrollY;
+      let offset = 0;          // на сколько px шапка сейчас уехала вверх
+      let snapTimer = null;
+
+      const apply = (px, animate) => {
+        header.style.transition = animate ? 'transform 0.22s cubic-bezier(0.22, 1, 0.36, 1)' : 'none';
+        header.style.transform = `translate3d(0, ${-px}px, 0)`;
+      };
+
+      const update = () => {
+        const maxScroll = Math.max(0, root.scrollHeight - window.innerHeight);
+        const y = Math.min(Math.max(0, window.scrollY), maxScroll); // без «резинки» iOS
+        const delta = y - lastY;
+        lastY = y;
+
+        const brandBottom = brand.offsetTop + brand.offsetHeight;
+        // Категории в шапке показываем, когда обычные уехали под неё
+        const showPills = !!inlineNav && inlineNav.getBoundingClientRect().bottom <= brandBottom;
+        header.classList.toggle('show-pills', showPills);
+        // С категориями прячем только строку с логотипом, без них — всю шапку
+        const maxShift = showPills ? brand.offsetHeight : header.offsetHeight;
+
+        const popoverOpen = !document.getElementById('brandCustomizerPopover').classList.contains('hidden');
+        if (popoverOpen) {
+          offset = 0;
+        } else {
+          offset = Math.min(Math.max(offset + delta, 0), maxShift);
+          offset = Math.min(offset, y); // у самого верха страницы шапка всегда видна
+        }
+        apply(offset, false);
+
+        // Палец отпустили — доводим до ближайшего крайнего положения
+        clearTimeout(snapTimer);
+        snapTimer = setTimeout(() => {
+          if (offset > 0 && offset < maxShift) {
+            offset = (offset > maxShift / 2 && y > maxShift) ? maxShift : 0;
+            apply(offset, true);
+          }
+        }, 140);
+      };
+
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update, { passive: true });
+      update();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (DEMO_MODE) document.body.classList.add('is-demo');
+      setupAutoHideHeader();
+
+      // Телефон и часы работы из настроек
+      document.getElementById('headerPhoneLink').href = `tel:${SITE_CONFIG.phoneRaw}`;
+      const footerHours = document.getElementById('footerHours');
+      if (footerHours) {
+        footerHours.textContent = `Ежедневно с ${SITE_CONFIG.hours.open} до ${SITE_CONFIG.hours.close} • Прямой приём заказов без комиссии агрегаторов`;
+      }
+      const footerFree = document.getElementById('footerFreeDelivery');
+      if (footerFree) footerFree.textContent = formatPrice(SITE_CONFIG.delivery.freeThreshold);
+
+      loadSavedPitchBrand();
+      if (!DEMO_MODE) {
+        // На боевом сайте бренд берём только из SITE_CONFIG, а не из localStorage
+        state.brand = {
+          name: SITE_CONFIG.defaultBrandName,
+          subtitle: SITE_CONFIG.defaultSubtitle,
+          accentColor: SITE_CONFIG.defaultAccentColor,
+          accentRgb: SITE_CONFIG.defaultAccentRgb,
+          logoDataUrl: ''
+        };
+      }
+      renderBentoHits();
+      renderCategoryPills();
+      renderMenu();
+      applyBrandToUI();
+      applyOpenStatus();
+      setInterval(applyOpenStatus, 60 * 1000);
+
+      enableHorizontalScroll(document.getElementById('upsellCarousel'));
+      enableHorizontalScroll(document.getElementById('categoryPills'));
+      enableHorizontalScroll(document.getElementById('categoryPillsFixed'));
+    });
+  </script>
+</body>
+</html>
